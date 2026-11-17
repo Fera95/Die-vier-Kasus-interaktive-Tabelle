@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die vier Kasus – interaktive Tabelle</title>
+<style>
+:root{--bg:#f8f6f2;--surf:#fff;--ink:#2a2118;--mute:#6a5b4b;--line:#e2d9cc;--acc:#a4490a;--onacc:#fff;--accbg:#f9eadb;--ok:#1a7f4b;--okbg:#e3f5ea;--bad:#b3261e;--badbg:#fbe7e5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17120d;--surf:#211a13;--ink:#f1e9de;--mute:#b3a38f;--line:#3a2f23;--acc:#f0a35e;--onacc:#1a1206;--accbg:#3a2a1a;--ok:#5fd394;--okbg:#17342a;--bad:#f19990;--badbg:#3b1f1d}}
+:root[data-theme="dark"]{--bg:#17120d;--surf:#211a13;--ink:#f1e9de;--mute:#b3a38f;--line:#3a2f23;--acc:#f0a35e;--onacc:#1a1206;--accbg:#3a2a1a;--ok:#5fd394;--okbg:#17342a;--bad:#f19990;--badbg:#3b1f1d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Times New Roman",serif}
+main{max-width:900px;margin:0 auto;padding:28px 18px 60px}
+h1{font-size:2rem;margin:0 0 4px}
+h2{font-size:1.25rem;margin:36px 0 10px}
+.sub{color:var(--mute);margin:0 0 22px;font-family:system-ui,sans-serif;font-size:.95rem}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surf)}
+table{border-collapse:collapse;width:100%;font-family:system-ui,sans-serif;font-size:.95rem}
+th,td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--accbg);font-weight:600}
+tr:last-child td{border-bottom:0}
+tr.row{cursor:pointer}
+tr.row:hover td,tr.row:focus td{background:var(--accbg)}
+tr.row:focus{outline:2px solid var(--acc);outline-offset:-2px}
+.ex{display:none;color:var(--mute);margin-top:6px}
+tr.open .ex{display:block}
+tr.open td:first-child{border-left:4px solid var(--acc)}
+.hint{font-size:.85rem;color:var(--mute);font-family:system-ui,sans-serif;margin:8px 0 0}
+.de{font-family:Georgia,serif;font-style:italic}
+button{font:inherit;font-family:system-ui,sans-serif;cursor:pointer}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.tab,.opt,.reset{padding:8px 14px;border:1px solid var(--line);background:var(--surf);color:var(--ink);border-radius:999px;font-size:.9rem}
+.opt{border-radius:8px}
+.tab[aria-selected="true"]{background:var(--acc);color:var(--onacc);border-color:var(--acc)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;font-family:system-ui,sans-serif;margin:6px 0}
+.chip{padding:10px 14px;border:2px dashed var(--line);background:var(--surf);color:var(--ink);border-radius:10px;font-size:1rem;text-align:left}
+.chip small{display:none;font-size:.78rem;margin-top:3px}
+.chip.on{border-style:solid}
+.chip.on small{display:block}
+.c-Nominativ.on{background:rgba(36,120,200,.2);border-color:#2478c8}
+.c-Akkusativ.on{background:rgba(200,60,60,.2);border-color:#c83c3c}
+.c-Dativ.on{background:rgba(30,140,90,.2);border-color:#1e8c5a}
+.c-Genitiv.on{background:rgba(200,140,20,.25);border-color:#c88c14}
+.q{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:12px;font-family:system-ui,sans-serif}
+.q p{margin:0 0 10px}
+.opts{display:flex;gap:8px;flex-wrap:wrap}
+.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad);color:var(--bad)}
+.fb{margin:10px 0 0;font-size:.9rem;color:var(--mute);min-height:1.2em}
+.score{font-family:system-ui,sans-serif;font-weight:600;margin:6px 0 10px}
+.note{font-family:system-ui,sans-serif;font-size:.9rem;color:var(--mute);margin:8px 0 0}
+</style>
+</head>
+<body>
+<main>
+<h1>Die vier Kasus</h1>
+<p class="sub">Nominativ, Akkusativ, Dativ, Genitiv – klicke auf eine Zeile, um ein Beispiel zu sehen.</p>
+
+<div class="tw"><table>
+<thead><tr><th>Thema</th><th>Erklärung</th></tr></thead>
+<tbody id="main"></tbody>
+</table></div>
+<p class="hint">Tipp: Mit Tab und Enter kannst du die Zeilen auch per Tastatur öffnen.</p>
+
+<h2>Die vier Kasus im Überblick</h2>
+<div class="tw"><table>
+<thead><tr><th>Kasus</th><th>Frage</th><th>Funktion</th><th>Beispiel</th></tr></thead>
+<tbody>
+<tr><td><b>Nominativ</b></td><td>Wer? Was?</td><td>Subjekt</td><td class="de">Der Mann schläft.</td></tr>
+<tr><td><b>Akkusativ</b></td><td>Wen? Was?</td><td>direktes Objekt</td><td class="de">Ich sehe den Mann.</td></tr>
+<tr><td><b>Dativ</b></td><td>Wem?</td><td>indirektes Objekt</td><td class="de">Ich gebe dem Mann ein Buch.</td></tr>
+<tr><td><b>Genitiv</b></td><td>Wessen?</td><td>Besitz, Zugehörigkeit</td><td class="de">Das Auto des Mannes.</td></tr>
+</tbody></table></div>
+
+<h2>Deklinationstabellen</h2>
+<div class="tabs" role="tablist" id="dtabs"></div>
+<div class="tw"><table><thead id="dh"></thead><tbody id="db"></tbody></table></div>
+<p class="note" id="dnote"></p>
+
+<h2>Präpositionen und Kasus</h2>
+<div class="tabs" role="tablist" id="ptabs"></div>
+<div class="tw"><table><thead><tr><th>Präposition</th><th>Beispiel</th></tr></thead><tbody id="pb"></tbody></table></div>
+<p class="note" id="pnote"></p>
+
+<h2>Satzanalyse: Klicke auf die Satzteile</h2>
+<div class="tabs" role="tablist" id="stabs"></div>
+<div class="chips" id="chips"></div>
+<p class="note">Blau = Nominativ, rot = Akkusativ, grün = Dativ, orange = Genitiv.</p>
+
+<h2>Lückenübung: Artikel und Pronomen einsetzen</h2>
+<p class="hint" style="margin:0 0 10px">Setze die richtige Form ein (Enter oder Prüfen).</p>
+<div id="wr"></div>
+
+<h2>Multiple-Choice-Übung (20 Fragen)</h2>
+<div class="score" id="score">Punkte: 0 / 0</div>
+<div id="quiz"></div>
+<button class="reset" id="reset" type="button">Neu starten</button>
+</main>
+
+<script>
+function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function tabs(box,names,cb){names.forEach(function(n,i){var b=el('button','tab',n);b.type='button';b.setAttribute('role','tab');b.addEventListener('click',function(){Array.prototype.forEach.call(box.children,function(c,j){c.setAttribute('aria-selected',j===i)});cb(i)});box.appendChild(b)});box.firstChild.click()}
+function fill(tb,rows,de){tb.innerHTML='';rows.forEach(function(r){var tr=el('tr');r.forEach(function(c,i){tr.appendChild(el('td',i>0&&de?'de':'',c))});tb.appendChild(tr)})}
+
+var rows=[
+["Nominativ","Wer oder was tut etwas? Das Subjekt. Auch nach sein, werden, bleiben.","Der Hund schläft. Er ist ein Lehrer."],
+["Akkusativ","Wen oder was? Direktes Objekt; nach bestimmten Präpositionen.","Ich sehe den Hund. Das Geschenk ist für dich."],
+["Dativ","Wem? Indirektes Objekt; nach bestimmten Präpositionen und Verben.","Ich gebe dem Kind ein Buch. Ich wohne bei meiner Tante."],
+["Genitiv","Wessen? Besitz oder Zugehörigkeit; nach bestimmten Präpositionen.","Das Auto des Mannes. Wegen des Regens bleiben wir hier."],
+["Nur Maskulin ändert sich","Im Akkusativ ändert sich nur der maskuline Artikel: der → den","Der Mann. → Ich sehe den Mann."],
+["Nominativ = Akkusativ","Bei Feminin, Neutrum und Plural sind beide Formen gleich","die Frau, das Kind, die Kinder"],
+["Genitiv-s","Maskuline und neutrale Nomen bekommen im Genitiv -s oder -es","das Haus des Lehrers, das Ende des Films"],
+["Dativ Plural","Das Nomen im Dativ Plural endet auf -n (außer es endet schon auf -n oder -s)","mit den Kindern, aber: mit den Autos"],
+["n-Deklination","Einige maskuline Nomen enden in allen Fällen außer Nominativ auf -n oder -en","der Junge → den, dem, des Jungen"],
+["Verben mit Akkusativ","sehen, haben, kaufen, lieben, brauchen, besuchen","Ich besuche meine Oma."],
+["Verben mit Dativ","helfen, danken, gefallen, gehören, schmecken, antworten, folgen, passen, fehlen","Das Buch gehört mir."],
+["Verben mit Dativ und Akkusativ","geben, schenken, zeigen, schicken, erklären, empfehlen: Person = Dativ, Sache = Akkusativ","Ich schenke dem Kind einen Ball."],
+["Wechselpräpositionen","Wohin? (Bewegung) → Akkusativ. Wo? (Ort) → Dativ","Ich gehe in die Schule. Ich bin in der Schule."],
+["Fragetrick","Stelle die Frage Wer/Wen/Wem/Wessen, um den Kasus zu finden","Ich schenke dem Kind einen Ball. Wem? → Dativ. Was? → Akkusativ."],
+["Typischer Fehler","Wo und Wohin verwechseln","Falsch: Ich bin in die Küche. Richtig: Ich bin in der Küche."]
+];
+var tb=document.getElementById('main');
+rows.forEach(function(r){
+ var tr=el('tr','row');tr.tabIndex=0;
+ var td1=el('td');td1.appendChild(el('b','',r[0]));
+ var td2=el('td','',r[1]);td2.appendChild(el('div','ex de',r[2]));
+ tr.appendChild(td1);tr.appendChild(td2);
+ function t(){tr.classList.toggle('open')}
+ tr.addEventListener('click',t);
+ tr.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}});
+ tb.appendChild(tr);
+});
+
+var G=["Kasus","Maskulin","Feminin","Neutrum","Plural"];
+var dec=[
+["bestimmter Artikel",G,[["Nominativ","der","die","das","die"],["Akkusativ","den","die","das","die"],["Dativ","dem","der","dem","den (+n am Nomen)"],["Genitiv","des (+s)","der","des (+s)","der"]],"Nominativ und Akkusativ unterscheiden sich nur beim Maskulin."],
+["unbestimmter Artikel",G,[["Nominativ","ein","eine","ein","–"],["Akkusativ","einen","eine","ein","–"],["Dativ","einem","einer","einem","–"],["Genitiv","eines (+s)","einer","eines (+s)","–"]],"Im Plural gibt es keinen unbestimmten Artikel."],
+["kein / mein / dein …",G,[["Nominativ","kein","keine","kein","keine"],["Akkusativ","keinen","keine","kein","keine"],["Dativ","keinem","keiner","keinem","keinen"],["Genitiv","keines","keiner","keines","keiner"]],"Possessivartikel (mein, dein, sein, ihr, unser, euer) werden wie kein dekliniert."],
+["Personalpronomen",["Kasus","ich","du","er","sie","es","wir","ihr","sie/Sie"],[["Nominativ","ich","du","er","sie","es","wir","ihr","sie/Sie"],["Akkusativ","mich","dich","ihn","sie","es","uns","euch","sie/Sie"],["Dativ","mir","dir","ihm","ihr","ihm","uns","euch","ihnen/Ihnen"],["Genitiv","meiner","deiner","seiner","ihrer","seiner","unser","euer","ihrer/Ihrer"]],"Der Genitiv der Pronomen wird heute kaum noch benutzt."],
+["Adjektiv nach der/die/das",G,[["Nominativ","der gute Mann","die gute Frau","das gute Kind","die guten Kinder"],["Akkusativ","den guten Mann","die gute Frau","das gute Kind","die guten Kinder"],["Dativ","dem guten Mann","der guten Frau","dem guten Kind","den guten Kindern"],["Genitiv","des guten Mannes","der guten Frau","des guten Kindes","der guten Kinder"]],"Nach dem bestimmten Artikel gilt: -e oder -en, und -en in allen anderen Fällen."]
+];
+var dh=document.getElementById('dh'),dbody=document.getElementById('db');
+tabs(document.getElementById('dtabs'),dec.map(function(d){return d[0]}),function(i){
+ var d=dec[i];dh.innerHTML='';var tr=el('tr');d[1].forEach(function(h){tr.appendChild(el('th','',h))});dh.appendChild(tr);
+ fill(dbody,d[2],true);document.getElementById('dnote').textContent=d[3];
+});
+
+var pr=[
+["Akkusativ",[["für","Das Geschenk ist für dich."],["durch","Wir gehen durch den Park."],["gegen","Er spielt gegen den Meister."],["ohne","Ich trinke Kaffee ohne Zucker."],["um","Wir sitzen um den Tisch."],["bis","Ich warte bis nächsten Montag."],["entlang","Sie läuft den Fluss entlang."]],"Merkhilfe: für, durch, gegen, ohne, um, bis, entlang."],
+["Dativ",[["aus","Sie kommt aus der Schweiz."],["bei","Er wohnt bei seinen Eltern."],["mit","Ich fahre mit dem Bus."],["nach","Nach dem Essen gehen wir spazieren."],["seit","Ich lerne seit einem Jahr Deutsch."],["von","Das Buch ist von meiner Tante."],["zu","Ich gehe zum Arzt."],["gegenüber","Die Bank ist gegenüber dem Bahnhof."]],"Merkhilfe: aus, bei, mit, nach, seit, von, zu, gegenüber."],
+["Genitiv",[["wegen","Wegen des Regens bleiben wir hier."],["trotz","Trotz des Wetters gehen wir raus."],["während","Während der Ferien lese ich viel."],["statt / anstatt","Statt des Autos nehme ich das Fahrrad."],["innerhalb","Innerhalb der Stadt gilt Tempo 30."],["außerhalb","Außerhalb des Dorfes ist ein See."]],"Umgangssprachlich steht nach wegen, trotz und während oft der Dativ."],
+["Wechselpräpositionen",[["an","Ich hänge das Bild an die Wand. / Das Bild hängt an der Wand."],["auf","Ich lege das Buch auf den Tisch. / Es liegt auf dem Tisch."],["hinter","Er stellt sich hinter die Tür. / Er steht hinter der Tür."],["in","Wir gehen in die Schule. / Wir sind in der Schule."],["neben","Setz dich neben mich. / Ich sitze neben dir."],["über","Die Lampe hängt über dem Tisch."],["unter","Die Katze läuft unter den Tisch. / Sie liegt unter dem Tisch."],["vor","Ich parke vor das Haus. / Das Auto steht vor dem Haus."],["zwischen","Ich stelle es zwischen die Bücher. / Es steht zwischen den Büchern."]],"Wohin? → Akkusativ. Wo? → Dativ."]
+];
+var pb=document.getElementById('pb');
+tabs(document.getElementById('ptabs'),pr.map(function(p){return p[0]}),function(i){
+ fill(pb,pr[i][1],true);document.getElementById('pnote').textContent=pr[i][2];
+});
+
+var sent=[
+["Satz 1",[["Der Mann","Nominativ","Wer?"],["gibt"],["dem Kind","Dativ","Wem?"],["einen Apfel","Akkusativ","Was?"]]],
+["Satz 2",[["Die Mutter","Nominativ","Wer?"],["des Mädchens","Genitiv","Wessen?"],["kauft"],["den Kuchen","Akkusativ","Was?"]]],
+["Satz 3",[["Ich","Nominativ","Wer?"],["danke"],["dir","Dativ","Wem?"],["für die Hilfe","Akkusativ","für + Akkusativ"]]],
+["Satz 4",[["Wegen des Regens","Genitiv","wegen + Genitiv"],["bleibt"],["der Hund","Nominativ","Wer?"],["im Haus","Dativ","Wo? in + Dativ"]]],
+["Satz 5",[["Die Lehrerin","Nominativ","Wer?"],["zeigt"],["den Schülern","Dativ","Wem?"],["das Bild","Akkusativ","Was?"],["mit dem Beamer","Dativ","mit + Dativ"]]]
+];
+var ch=document.getElementById('chips');
+tabs(document.getElementById('stabs'),sent.map(function(s){return s[0]}),function(i){
+ ch.innerHTML='';
+ sent[i][1].forEach(function(p){
+  var b=el('button','chip'+(p[1]?' c-'+p[1]:''),p[0]);b.type='button';
+  if(p[1]){b.appendChild(el('small','',p[1]+' ('+p[2]+')'));b.addEventListener('click',function(){b.classList.toggle('on')})}
+  else{b.style.border='0';b.style.background='none';b.style.cursor='default';b.tabIndex=-1}
+  ch.appendChild(b);
+ });
+});
+
+function nz(s){return s.toLowerCase().replace(/[.!?]/g,'').replace(/\s+/g,' ').trim()}
+var wi=[
+["Ich sehe ___ Hund. (der Hund)","den"],
+["Sie gibt ___ Kind einen Apfel. (das Kind)","dem"],
+["Das ist das Auto ___ Mannes. (der Mann)","des"],
+["Er wohnt bei ___ Eltern. (die Eltern)","den"],
+["Wir gehen in ___ Park. (der Park, Wohin?)","den"],
+["Wir sind in ___ Park. (der Park, Wo?)","dem"],
+["Wegen ___ Regens bleiben wir zu Hause. (der Regen)","des"],
+["Ich schenke ___ Frau eine Blume. (die Frau)","der"],
+["Ich helfe ___. (er)","ihm"],
+["Ich liebe ___. (du)","dich"]
+];
+var wr=document.getElementById('wr');
+wi.forEach(function(w){
+ var box=el('div','q');box.appendChild(el('p','de',w[0]));
+ var row=el('div','opts');
+ var inp=el('input');inp.type='text';inp.setAttribute('aria-label','Antwort');inp.autocomplete='off';
+ inp.style.cssText='width:140px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surf);color:var(--ink);font:inherit';
+ var bt=el('button','opt','Prüfen');bt.type='button';
+ var fb=el('div','fb');fb.setAttribute('aria-live','polite');
+ function chk(){var ok=nz(inp.value)===w[1];inp.style.borderColor=ok?'var(--ok)':'var(--bad)';fb.textContent=ok?'Richtig!':'Noch nicht. Lösung: '+w[1]}
+ bt.addEventListener('click',chk);inp.addEventListener('keydown',function(e){if(e.key==='Enter')chk()});
+ row.appendChild(inp);row.appendChild(bt);box.appendChild(row);box.appendChild(fb);wr.appendChild(box);
+});
+
+var qs=[
+["Welcher Kasus antwortet auf die Frage „Wem?“",["Akkusativ","Dativ","Genitiv"],1,"Wem? fragt nach dem Dativ."],
+["Welcher Kasus antwortet auf die Frage „Wessen?“",["Genitiv","Dativ","Nominativ"],0,"Wessen? fragt nach dem Genitiv."],
+["„Ich sehe den Hund.“ In welchem Kasus steht „den Hund“?",["Nominativ","Dativ","Akkusativ"],2,"Wen sehe ich? Den Hund: Akkusativ."],
+["Nach welcher Präposition steht immer der Dativ?",["für","mit","ohne"],1,"mit + Dativ. Für und ohne verlangen den Akkusativ."],
+["Nach „durch“ steht:",["Akkusativ","Dativ","Genitiv"],0,"durch gehört zu den Akkusativ-Präpositionen."],
+["Nach „wegen“ steht (Schriftsprache):",["Akkusativ","Dativ","Genitiv"],2,"wegen + Genitiv."],
+["Ich gebe ___ Kind ein Buch.",["das","dem","des"],1,"Wem gebe ich das Buch? Dem Kind: Dativ."],
+["Das ist das Haus ___ Lehrers.",["der","dem","des"],2,"Genitiv Maskulin: des Lehrers."],
+["Welcher Artikel ändert sich im Akkusativ?",["der (maskulin)","die (feminin)","das (neutrum)"],0,"Nur der maskuline Artikel: der → den."],
+["Nominativ und Akkusativ sind gleich bei:",["Maskulin","Feminin, Neutrum und Plural","nur beim Plural"],1,"Nur das Maskulin hat eine eigene Akkusativform."],
+["Ich gehe in ___ Küche. (Wohin?)",["die","der","dem"],0,"Wohin? → Akkusativ: in die Küche."],
+["Das Buch liegt auf ___ Tisch. (Wo?)",["den","dem","der"],1,"Wo? → Dativ: auf dem Tisch."],
+["Das Nomen im Dativ Plural endet meistens auf:",["-n","-s","-e"],0,"mit den Kindern."],
+["Das Verb „helfen“ steht mit:",["Dativ","Akkusativ","Genitiv"],0,"Ich helfe dir."],
+["Das Verb „kaufen“ steht mit:",["Dativ","Akkusativ","Genitiv"],1,"Ich kaufe einen Apfel."],
+["Ich danke ___.",["dich","dir","deiner"],1,"danken + Dativ: dir."],
+["Welcher Satz ist richtig?",["Ich habe einen Bruder.","Ich habe ein Bruder.","Ich habe einem Bruder."],0,"haben + Akkusativ: einen Bruder."],
+["Welcher Satz ist richtig?",["Ich sehe den Junge.","Ich sehe den Jungen.","Ich sehe dem Jungen."],1,"n-Deklination: der Junge → den Jungen."],
+["Während ___ Ferien lese ich viel.",["die","den","der"],2,"während + Genitiv Plural: der Ferien."],
+["Welche Frage zeigt das Akkusativobjekt?",["Wen oder was?","Wem?","Wessen?"],0,"Wen oder was? fragt nach dem Akkusativ."]
+];
+var qd=document.getElementById('quiz'),sc=document.getElementById('score'),pts=0,done=0;
+function build(){
+ qd.innerHTML='';pts=0;done=0;sc.textContent='Punkte: 0 / 0';
+ qs.forEach(function(q){
+  var box=el('div','q');box.appendChild(el('p','',q[0]));
+  var o=el('div','opts');box.appendChild(o);
+  var fb=el('div','fb');fb.setAttribute('aria-live','polite');box.appendChild(fb);
+  var answered=false;
+  q[1].forEach(function(t,i){
+   var b=el('button','opt',t);b.type='button';
+   b.addEventListener('click',function(){
+    if(answered)return;answered=true;done++;
+    var ok=i===q[2];if(ok)pts++;
+    b.classList.add(ok?'ok':'bad');
+    if(!ok)o.children[q[2]].classList.add('ok');
+    fb.textContent=(ok?'Richtig! ':'Leider falsch. ')+q[3];
+    sc.textContent='Punkte: '+pts+' / '+done;
+   });
+   o.appendChild(b);
+  });
+  qd.appendChild(box);
+ });
+}
+document.getElementById('reset').addEventListener('click',build);
+build();
+</script>
+</body>
+</html>
